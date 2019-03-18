@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MockNotif</string>
+    <string name="wsb_noti_robot_browser">For Robot Browser</string>
+</resources>
