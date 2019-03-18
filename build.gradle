@@ -20,7 +20,7 @@ allprojects {
         google()
         jcenter()
         maven {
-            url 'https://android.aldebaran.com/sdk-beta/maven'
+            url 'https://android.aldebaran.com/sdk/maven'
         }
     }
 }

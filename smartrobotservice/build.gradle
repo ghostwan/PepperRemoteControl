@@ -4,17 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
-        applicationId "com.ghostwan.mocknotif"
+        applicationId "com.ghostwan.pepperremote.smart"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
