@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
-    compileSdkVersion 28
+    compileSdkVersion config.android.compileSdk
 
     defaultConfig {
         applicationId "com.ghostwan.pepperremote.smart"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion config.android.minSdk
+        targetSdkVersion config.android.targetSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,10 +24,28 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //Kotlin
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$config.kotlin"
+
+    //UI
+    implementation "androidx.appcompat:appcompat:$lib.ui.appcompat"
+    implementation "com.google.android.material:material:$lib.ui.material"
+    implementation "androidx.constraintlayout:constraintlayout:$lib.ui.constraint"
+
+    //Injection - Koin
+    implementation "org.koin:koin-android:$lib.koin"
+
+    //Logging - Timber
+    implementation "com.jakewharton.timber:timber:$lib.timber"
+
+    //Test
+    testImplementation "androidx.test.ext:junit:$lib.test.junit"
+    testImplementation "io.mockk:mockk:$lib.test.mockk"
+    testImplementation "org.amshove.kluent:kluent-android:$lib.test.kluent"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$lib.test.espresso"
+    androidTestImplementation "androidx.test:runner:$lib.test.runner"
+    androidTestImplementation "androidx.test:rules:$lib.test.rules"
+    androidTestImplementation "io.mockk:mockk-android:$lib.test.mockk"
+    androidTestImplementation "androidx.test.ext:junit:$lib.test.junit"
+    androidTestImplementation "com.agoda.kakao:kakao:$lib.test.kakao"
 }

@@ -1,14 +1,54 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.20'
+    //Build config versions
+    ext.config = [
+            'android'       : [
+                    'minSdk'    : 23,
+                    'targetSdk' : 28,
+                    'compileSdk': 28,
+            ],
+            'java'          : JavaVersion.VERSION_1_8,
+            'kotlin'        : '1.3.21',
+            'android_gradle': '3.3.2',
+    ]
+
+    //Libraries versions
+    ext.lib = [
+            'ui'        : [
+                    'appcompat'   : '1.1.0-alpha3',
+                    'recyclerview': '1.0.0',
+                    'material'    : '1.1.0-alpha04',
+                    'constraint'  : '1.1.3'
+            ],
+            'robot'     : [
+                    'qisdk'    : '1.4.8',
+                    'libqijava': '2.6.0'
+            ],
+            'retrofit'  : '2.4.0',
+            'rxjava'    : '2.2.4',
+            'rxandroid' : '2.1.0',
+            'koin'      : '1.0.2',
+            'timber'    : '4.7.1',
+            'leakcanary': '1.6.2',
+            'test'      : [
+                    'junit'   : '1.0.0',
+                    'espresso': '3.1.0',
+                    'runner'  : '1.1.0',
+                    'rules'   : '1.1.0',
+                    'mockk'   : '1.8.13.kotlin13',
+                    'kluent'  : '1.44',
+                    'kakao'   : '1.4.0'
+            ]
+    ]
+
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:$config.android_gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$config.kotlin"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -28,3 +68,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
