@@ -12,6 +12,20 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <service
+                android:name=".service.RobotService"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <!-- use for starting the service through startService() -->
+                <action android:name="com.aldebaran.action.START_ROBOT_SERVICE" />
+                <!-- use for binding the service through bindService() -->
+                <action android:name="com.aldebaran.action.ROBOT_SERVICE" />
+                <action android:name="com.aldebaran.action.ROBOT_SYSTEM_SERVICE" />
+                <action android:name="com.aldebaran.action.CLOUD_SERVICE" />
+            </intent-filter>
+        </service>
+
         <activity android:name=".ui.info.InfoActivity">
         </activity>
         <activity android:name=".ui.qrcode.QRCodeScannerActivity">

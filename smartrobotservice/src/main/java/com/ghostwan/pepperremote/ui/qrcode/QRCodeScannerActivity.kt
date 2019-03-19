@@ -7,7 +7,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.ghostwan.pepperremote.App.Companion.EXTRA_FOCUS_TOKEN
+import com.ghostwan.pepperremote.App.Companion.EXTRA_PUBLIC_TOKEN
+import com.ghostwan.pepperremote.App.Companion.EXTRA_ROBOT_ENDPOINT
 import com.ghostwan.pepperremote.R
+import com.ghostwan.pepperremote.service.RobotService
 import com.ghostwan.pepperremote.ui.info.InfoActivity
 import com.google.android.material.snackbar.Snackbar
 import me.dm7.barcodescanner.zbar.Result
@@ -49,12 +53,18 @@ class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, Z
     }
 
     override fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String) {
-        val intent = Intent(this, InfoActivity::class.java).apply {
-            putExtra(InfoActivity.EXTRA_ROBOT_ENDPOINT, endpoint)
-            putExtra(InfoActivity.EXTRA_PUBLIC_TOKEN, publicToken)
-            putExtra(InfoActivity.EXTRA_FOCUS_TOKEN, focusToken)
+        val activityIntent = Intent(this, InfoActivity::class.java).apply {
+            putExtra(EXTRA_ROBOT_ENDPOINT, endpoint)
+            putExtra(EXTRA_PUBLIC_TOKEN, publicToken)
+            putExtra(EXTRA_FOCUS_TOKEN, focusToken)
         }
-        startActivity(intent)
+        val serviceIntent = Intent(this, RobotService::class.java).apply {
+            putExtra(EXTRA_ROBOT_ENDPOINT, endpoint)
+            putExtra(EXTRA_PUBLIC_TOKEN, publicToken)
+        }
+        startService(serviceIntent)
+        startActivity(activityIntent)
+
     }
 
     override fun showError(error: Throwable) {
