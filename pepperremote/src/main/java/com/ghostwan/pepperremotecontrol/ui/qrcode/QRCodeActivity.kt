@@ -6,7 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.aldebaran.robotservice.FocusUtil
 import com.aldebaran.robotservice.IRobotService
 import com.aldebaran.robotservice.RobotServiceUtil
@@ -16,6 +18,7 @@ import com.ghostwan.pepperremotecontrol.robot.Robot
 import com.ghostwan.pepperremotecontrol.util.hideSystemBars
 import com.ghostwan.pepperremotecontrol.util.logError
 import com.ghostwan.pepperremotecontrol.util.logInfo
+import com.ghostwan.pepperremotecontrol.util.start
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
@@ -58,15 +61,20 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
 
     class FocusRefusedException : Throwable()
 
+    private lateinit var animation: AnimatedVectorDrawableCompat
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.ghostwan.pepperremotecontrol.R.layout.activity_qrcode)
-        bindService(RobotServiceUtil.getRobotServiceIntent(), robotServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         super.onResume()
         hideSystemBars()
+        qrcodeImage.setImageResource(R.drawable.robot)
+        connectionImage.visibility = View.INVISIBLE
+        info.setText(R.string.wait)
+        bindService(RobotServiceUtil.getRobotServiceIntent(), robotServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
 
@@ -83,7 +91,11 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
                             bmp.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
                         }
                     }
+                    info.setText(R.string.instruction)
                     qrcodeImage.setImageBitmap(bmp)
+                    animation = connectionImage.start(true ) {
+                        connectionImage.visibility = View.VISIBLE
+                    }
                 }
 
             } catch (e: WriterException) {
@@ -114,8 +126,9 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
         hideSystemBars()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
+        animation.stop()
         unbindService(robotServiceConnection)
     }
 
