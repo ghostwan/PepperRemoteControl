@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol.util
+package com.ghostwan.pepperremote.util
 
 import android.app.Activity
 import android.view.View

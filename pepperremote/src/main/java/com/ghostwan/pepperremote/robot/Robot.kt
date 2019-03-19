@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol.robot
+package com.ghostwan.pepperremote.robot
 
 import com.aldebaran.qi.Future
 

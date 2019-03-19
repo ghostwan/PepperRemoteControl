@@ -1,11 +1,10 @@
-package com.ghostwan.pepperremotecontrol.robot
+package com.ghostwan.pepperremote.robot
 
 import com.aldebaran.qi.Future
 import com.aldebaran.qi.Session
 import com.aldebaran.qi.Tuple
 import com.aldebaran.qi.UserTokenAuthenticator
-import com.ghostwan.pepperremotecontrol.util.logError
-import com.ghostwan.pepperremotecontrol.util.logInfo
+import timber.log.Timber
 
 class Pepper(
     private val endpoint: String,
@@ -20,8 +19,7 @@ class Pepper(
             .andThenCompose { it.call<Tuple>("service", "Actuation") }
             .thenCompose {
                 if(it.hasError())
-                    logError(it.error)
-                logInfo(it.toString())
+                    Timber.e(it.error)
                 return@thenCompose it
             }
             .andThenApply {

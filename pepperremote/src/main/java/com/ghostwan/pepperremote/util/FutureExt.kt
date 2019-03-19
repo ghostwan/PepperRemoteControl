@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol.util
+package com.ghostwan.pepperremote.util
 
 import com.aldebaran.qi.Future
 import java.util.concurrent.CancellationException

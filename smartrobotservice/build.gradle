@@ -25,12 +25,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //Kotlin
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$config.kotlin"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$config.kotlin"
 
     //UI
     implementation "androidx.appcompat:appcompat:$lib.ui.appcompat"
     implementation "com.google.android.material:material:$lib.ui.material"
     implementation "androidx.constraintlayout:constraintlayout:$lib.ui.constraint"
+
+    //QRCode
+    implementation 'me.dm7.barcodescanner:zbar:1.8.4'
 
     //Injection - Koin
     implementation "org.koin:koin-android:$lib.koin"
@@ -39,6 +42,8 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$lib.timber"
 
     //Test
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     testImplementation "androidx.test.ext:junit:$lib.test.junit"
     testImplementation "io.mockk:mockk:$lib.test.mockk"
     testImplementation "org.amshove.kluent:kluent-android:$lib.test.kluent"

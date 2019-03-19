@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">MockNotif</string>
-    <string name="wsb_noti_robot_browser">For Robot Browser</string>
+    <string name="app_name">Pepper Remote</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="error_qrcode_corrupted">Error can\'t read QR Code informations, wrong format!</string>
 </resources>

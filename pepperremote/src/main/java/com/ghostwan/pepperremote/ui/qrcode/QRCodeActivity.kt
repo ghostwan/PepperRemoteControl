@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol.ui.qrcode
+package com.ghostwan.pepperremote.ui.qrcode
 
 import android.content.*
 import android.content.res.Configuration
@@ -12,18 +12,17 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.aldebaran.robotservice.FocusUtil
 import com.aldebaran.robotservice.IRobotService
 import com.aldebaran.robotservice.RobotServiceUtil
-import com.ghostwan.pepperremotecontrol.R
-import com.ghostwan.pepperremotecontrol.robot.Pepper
-import com.ghostwan.pepperremotecontrol.robot.Robot
-import com.ghostwan.pepperremotecontrol.util.hideSystemBars
-import com.ghostwan.pepperremotecontrol.util.logError
-import com.ghostwan.pepperremotecontrol.util.logInfo
-import com.ghostwan.pepperremotecontrol.util.start
+import com.ghostwan.pepperremote.R
+import com.ghostwan.pepperremote.robot.Pepper
+import com.ghostwan.pepperremote.robot.Robot
+import com.ghostwan.pepperremote.util.hideSystemBars
+import com.ghostwan.pepperremote.util.start
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.android.synthetic.main.activity_qrcode.*
+import timber.log.Timber
 
 
 class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
@@ -59,13 +58,11 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
         }
     }
 
-    class FocusRefusedException : Throwable()
-
     private lateinit var animation: AnimatedVectorDrawableCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.ghostwan.pepperremotecontrol.R.layout.activity_qrcode)
+        setContentView(com.ghostwan.pepperremote.R.layout.activity_qrcode)
     }
 
     override fun onResume() {
@@ -80,7 +77,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
 
     override fun showQRCode(content: String) {
         runOnUiThread {
-            logInfo(content)
+            Timber.i(content)
             val writer = QRCodeWriter()
             try {
                 val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512)
@@ -107,7 +104,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
 
     override fun showError(error: Throwable) {
         runOnUiThread {
-            logError(error)
+            Timber.e(error)
             val errorID = when (error) {
                 is Pepper.NoEndpointFoundException -> R.string.error_no_endpoint_found
                 else -> R.string.unknown_error
@@ -133,5 +130,6 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
     }
 
 
+    class FocusRefusedException : Throwable()
 
 }

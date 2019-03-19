@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol.util
+package com.ghostwan.pepperremote.util
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView

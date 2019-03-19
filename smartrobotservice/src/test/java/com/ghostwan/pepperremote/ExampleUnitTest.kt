@@ -1,4 +1,4 @@
-package com.ghostwan.mocknotif
+package com.ghostwan.pepperremote
 
 import org.junit.Test
 

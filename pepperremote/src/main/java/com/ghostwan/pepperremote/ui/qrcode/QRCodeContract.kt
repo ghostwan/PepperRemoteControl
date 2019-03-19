@@ -1,6 +1,6 @@
-package com.ghostwan.pepperremotecontrol.ui.qrcode
+package com.ghostwan.pepperremote.ui.qrcode
 
-import com.ghostwan.pepperremotecontrol.robot.Robot
+import com.ghostwan.pepperremote.robot.Robot
 
 interface QRCodeContract {
     interface View {
