@@ -1,4 +1,4 @@
-package com.ghostwan.pepperremotecontrol
+package com.ghostwan.pepperremotecontrol.util
 
 import android.util.Log
 

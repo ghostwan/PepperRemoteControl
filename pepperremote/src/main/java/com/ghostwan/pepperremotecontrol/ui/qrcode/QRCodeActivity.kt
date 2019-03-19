@@ -10,9 +10,10 @@ import com.aldebaran.robotservice.FocusUtil
 import com.aldebaran.robotservice.IRobotService
 import com.aldebaran.robotservice.RobotServiceUtil
 import com.ghostwan.pepperremotecontrol.R
-import com.ghostwan.pepperremotecontrol.logError
+import com.ghostwan.pepperremotecontrol.util.logError
 import com.ghostwan.pepperremotecontrol.robot.Pepper
 import com.ghostwan.pepperremotecontrol.robot.Robot
+import com.ghostwan.pepperremotecontrol.util.logInfo
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
@@ -67,7 +68,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
     }
 
     override fun showQRCode(content: String) {
-        logText.text = content
+        logInfo(content)
         val writer = QRCodeWriter()
         try {
             val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512)

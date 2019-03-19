@@ -2,4 +2,5 @@
     <string name="app_name">PepperRemoteControl</string>
     <string name="error_no_endpoint_found">No end point rechable from outside</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="instruction">Instruction: scan the QRCode with Pepper Remote on your smartphone</string>
 </resources>
