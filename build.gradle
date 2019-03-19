@@ -16,7 +16,7 @@ buildscript {
     //Libraries versions
     ext.lib = [
             'ui'        : [
-                    'appcompat'   : '1.1.0-alpha3',
+                    'appcompat'   : '1.1.0-alpha2',
                     'recyclerview': '1.0.0',
                     'material'    : '1.1.0-alpha04',
                     'constraint'  : '1.1.3'

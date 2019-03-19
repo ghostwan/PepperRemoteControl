@@ -9,10 +9,14 @@ class QRCodePresenter(private val view: QRCodeContract.View) : QRCodeContract.Pr
                 view.showError(it.error)
             }
             else {
-                val qrcodeValue = "${it.get()}:${robot.getPublicToken()}:$focusToken"
+                val qrcodeValue = "${it.get()}$SEPARATOR${robot.getPublicToken()}$SEPARATOR$focusToken"
                 view.showQRCode(qrcodeValue)
             }
         }
+    }
+
+    companion object {
+        private const val SEPARATOR: String = ";"
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ghostwan.pepperremotecontrol.ui.qrcode
 
 import android.content.*
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -10,9 +11,10 @@ import com.aldebaran.robotservice.FocusUtil
 import com.aldebaran.robotservice.IRobotService
 import com.aldebaran.robotservice.RobotServiceUtil
 import com.ghostwan.pepperremotecontrol.R
-import com.ghostwan.pepperremotecontrol.util.logError
 import com.ghostwan.pepperremotecontrol.robot.Pepper
 import com.ghostwan.pepperremotecontrol.robot.Robot
+import com.ghostwan.pepperremotecontrol.util.hideSystemBars
+import com.ghostwan.pepperremotecontrol.util.logError
 import com.ghostwan.pepperremotecontrol.util.logInfo
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.BarcodeFormat
@@ -46,7 +48,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
     private val focusReceiver = object : BroadcastReceiver() {
         override fun onReceive(content: Context, intent: Intent) {
             if (intent.action == FocusUtil.ACTION_FOCUS_PREEMPTED) {
-                presenter.computeQRCode(pepper as Robot, intent.getStringExtra(FocusUtil.KEY_FOCUSID))
+                presenter.computeQRCode(pepper as Robot, this@QRCodeActivity.intent.getStringExtra(FocusUtil.KEY_FOCUSID))
             } else {
                 showError(FocusRefusedException())
             }
@@ -62,39 +64,61 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
         bindService(RobotServiceUtil.getRobotServiceIntent(), robotServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    override fun onResume() {
+        super.onResume()
+        hideSystemBars()
+    }
+
+
+    override fun showQRCode(content: String) {
+        runOnUiThread {
+            logInfo(content)
+            val writer = QRCodeWriter()
+            try {
+                val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512)
+                with(bitMatrix) {
+                    val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+                    for (x in 0 until width) {
+                        for (y in 0 until height) {
+                            bmp.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
+                        }
+                    }
+                    qrcodeImage.setImageBitmap(bmp)
+                }
+
+            } catch (e: WriterException) {
+                qrcodeImage.setImageResource(R.drawable.ic_error_red)
+                showError(e)
+            }
+        }
+    }
+
+    override fun showError(error: Throwable) {
+        runOnUiThread {
+            logError(error)
+            val errorID = when (error) {
+                is Pepper.NoEndpointFoundException -> R.string.error_no_endpoint_found
+                else -> R.string.unknown_error
+            }
+            Snackbar.make(mainLayout, errorID, Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        hideSystemBars()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        hideSystemBars()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         unbindService(robotServiceConnection)
     }
 
-    override fun showQRCode(content: String) {
-        logInfo(content)
-        val writer = QRCodeWriter()
-        try {
-            val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512)
-            with(bitMatrix) {
-                val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-                for (x in 0 until width) {
-                    for (y in 0 until height) {
-                        bmp.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
-                    }
-                }
-                qrcodeImage.setImageBitmap(bmp)
-            }
 
-        } catch (e: WriterException) {
-            qrcodeImage.setImageResource(R.drawable.ic_error_red)
-            showError(e)
-        }
-    }
-
-    override fun showError(error: Throwable) {
-        logError(error)
-        val errorID = when (error) {
-            is Pepper.NoEndpointFoundException -> R.string.error_no_endpoint_found
-            else -> R.string.unknown_error
-        }
-        Snackbar.make(mainLayout, errorID, Snackbar.LENGTH_SHORT).show()
-    }
 
 }
