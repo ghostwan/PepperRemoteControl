@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.aldebaran.robotservice.FocusUtil
 import com.aldebaran.robotservice.IRobotService
 import com.aldebaran.robotservice.RobotServiceUtil
@@ -32,7 +32,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val iRobotService = IRobotService.Stub.asInterface(service)
-            pepper = Pepper(iRobotService.publicEndpoint, password = iRobotService.publicToken)
+            pepper = Pepper(iRobotService.publicEndpoint, iRobotService.publicToken)
             if (FocusUtil.isFocusPreempted(this@QRCodeActivity, iRobotService)) {
                 presenter.computeQRCode(pepper as Robot, intent.getStringExtra(FocusUtil.KEY_FOCUSID))
             } else {

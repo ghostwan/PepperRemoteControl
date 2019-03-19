@@ -4,11 +4,13 @@ import com.aldebaran.qi.Future
 import com.aldebaran.qi.Session
 import com.aldebaran.qi.Tuple
 import com.aldebaran.qi.UserTokenAuthenticator
+import com.ghostwan.pepperremotecontrol.util.logError
+import com.ghostwan.pepperremotecontrol.util.logInfo
 
 class Pepper(
     private val endpoint: String,
-    private val login: String="tablet",
-    private val password: String) : Robot {
+    private val password: String,
+    private val login: String="tablet") : Robot {
 
     private var session: Session = Session()
 
@@ -16,6 +18,12 @@ class Pepper(
         return getConnectedSession()
             .andThenCompose { it.service("ServiceDirectory") }
             .andThenCompose { it.call<Tuple>("service", "Actuation") }
+            .thenCompose {
+                if(it.hasError())
+                    logError(it.error)
+                logInfo(it.toString())
+                return@thenCompose it
+            }
             .andThenApply {
                 if (it.size() >= 5) {
                     val list = it.get(4) as List<String>
