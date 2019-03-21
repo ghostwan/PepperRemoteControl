@@ -1,14 +1,14 @@
-package com.ghostwan.pepperremote.ui.info
+package com.ghostwan.pepperremote.ui.launcher
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ghostwan.pepperremote.App.Companion.EXTRA_FOCUS_TOKEN
-import com.ghostwan.pepperremote.App.Companion.EXTRA_PUBLIC_TOKEN
-import com.ghostwan.pepperremote.App.Companion.EXTRA_ROBOT_ENDPOINT
+import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_FOCUS_TOKEN
+import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_PUBLIC_TOKEN
+import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_ROBOT_ENDPOINT
 import com.ghostwan.pepperremote.R
 import kotlinx.android.synthetic.main.activity_info.*
 
-class InfoActivity : AppCompatActivity() {
+class LauncherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

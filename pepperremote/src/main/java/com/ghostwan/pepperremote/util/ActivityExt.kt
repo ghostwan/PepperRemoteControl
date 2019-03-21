@@ -1,11 +1,17 @@
 package com.ghostwan.pepperremote.util
 
 import android.app.Activity
+import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 
 fun Activity.hideSystemBars() {
-    if (hasFlags(window.decorView.systemUiVisibility, View.SYSTEM_UI_FLAG_FULLSCREEN, View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)) {
+    if (hasFlags(
+            window.decorView.systemUiVisibility,
+            View.SYSTEM_UI_FLAG_FULLSCREEN,
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        )
+    ) {
         return
     }
 
@@ -31,4 +37,10 @@ fun hasFlags(visibility: Int, vararg flags: Int): Boolean {
         }
     }
     return true
+}
+
+fun Activity.runAfter(delay: Long, process: () -> Unit) {
+    Handler().postDelayed({
+        process()
+    }, delay)
 }

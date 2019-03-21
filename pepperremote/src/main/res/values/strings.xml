@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">PepperRemoteControl</string>
+    <string name="app_name">QiSDK Remote</string>
     <string name="error_no_endpoint_found">No end point rechable from outside</string>
     <string name="unknown_error">Unknown error</string>
     <string name="instruction">Instruction: scan the QRCode with Pepper Remote on your smartphone</string>
     <string name="wait">Wait for robot to be ready</string>
+    <string name="focus_lost">Focus lost, app is quiting....</string>
 </resources>

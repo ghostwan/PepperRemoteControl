@@ -1,1 +1,1 @@
-include ':pepperremote', ':smartrobotservice'
+include ':pepperremote', ':smartrobotservice', ':sampleqisdk'

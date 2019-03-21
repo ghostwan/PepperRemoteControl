@@ -5,7 +5,7 @@ android {
     compileSdkVersion config.android.compileSdk
 
     defaultConfig {
-        applicationId "com.ghostwan.pepperremote.smart"
+        applicationId "com.aldebaran.robotservice"
         minSdkVersion config.android.minSdk
         targetSdkVersion config.android.targetSdk
         versionCode 1

@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-buildscript {
+buildscript { 
     //Build config versions
     ext.config = [
             'android'       : [
@@ -16,7 +16,7 @@ buildscript {
     //Libraries versions
     ext.lib = [
             'ui'        : [
-                    'appcompat'   : '1.1.0-alpha2',
+                    'appcompat'   : '1.1.0-alpha02',
                     'recyclerview': '1.0.0',
                     'material'    : '1.1.0-alpha04',
                     'constraint'  : '1.1.3'

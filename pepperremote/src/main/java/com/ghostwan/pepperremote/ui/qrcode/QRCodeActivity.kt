@@ -16,6 +16,7 @@ import com.ghostwan.pepperremote.R
 import com.ghostwan.pepperremote.robot.Pepper
 import com.ghostwan.pepperremote.robot.Robot
 import com.ghostwan.pepperremote.util.hideSystemBars
+import com.ghostwan.pepperremote.util.runAfter
 import com.ghostwan.pepperremote.util.start
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.BarcodeFormat
@@ -68,12 +69,9 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
     override fun onResume() {
         super.onResume()
         hideSystemBars()
-        qrcodeImage.setImageResource(R.drawable.robot)
-        connectionImage.visibility = View.INVISIBLE
-        info.setText(R.string.wait)
+        showWaitingForRobot()
         bindService(RobotServiceUtil.getRobotServiceIntent(), robotServiceConnection, Context.BIND_AUTO_CREATE)
     }
-
 
     override fun showQRCode(content: String) {
         runOnUiThread {
@@ -88,15 +86,11 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
                             bmp.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
                         }
                     }
-                    info.setText(R.string.instruction)
-                    qrcodeImage.setImageBitmap(bmp)
-                    animation = connectionImage.start(true ) {
-                        connectionImage.visibility = View.VISIBLE
-                    }
+                    statusImage.setImageBitmap(bmp)
+                    showWaitingForDevice()
                 }
 
             } catch (e: WriterException) {
-                qrcodeImage.setImageResource(R.drawable.ic_error_red)
                 showError(e)
             }
         }
@@ -105,6 +99,7 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
     override fun showError(error: Throwable) {
         runOnUiThread {
             Timber.e(error)
+            statusImage.setImageResource(R.drawable.ic_error_red)
             val errorID = when (error) {
                 is Pepper.NoEndpointFoundException -> R.string.error_no_endpoint_found
                 else -> R.string.unknown_error
@@ -129,6 +124,39 @@ class QRCodeActivity : AppCompatActivity(), QRCodeContract.View {
         unbindService(robotServiceConnection)
     }
 
+    override fun showWaitingForDevice() {
+        runOnUiThread {
+            info.setText(R.string.instruction)
+            animation = connectionImage.start(true ) {
+                connectionImage.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun showDeviceConnected() {
+        runOnUiThread {
+            animation.stop()
+        }
+    }
+
+    override fun showFocusLost() {
+        runOnUiThread {
+            connectionImage.visibility = View.INVISIBLE
+            statusImage.setImageResource(R.drawable.lost)
+            info.setText(R.string.focus_lost)
+            runAfter(2000) {
+                finish()
+            }
+        }
+    }
+
+    override fun showWaitingForRobot() {
+        runOnUiThread {
+            connectionImage.visibility = View.INVISIBLE
+            statusImage.setImageResource(R.drawable.waiting)
+            info.setText(R.string.wait)
+        }
+    }
 
     class FocusRefusedException : Throwable()
 

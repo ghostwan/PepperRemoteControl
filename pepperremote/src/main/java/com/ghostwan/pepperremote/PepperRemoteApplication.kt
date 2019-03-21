@@ -5,7 +5,7 @@ import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 
-class App : Application() {
+class PepperRemoteApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

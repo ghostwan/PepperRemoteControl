@@ -1,11 +1,12 @@
 package com.ghostwan.pepperremote
 
 import android.app.Application
+import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 
-class App : Application() {
+class SmartRobotServiceApplication : Application() {
 
     companion object {
         const val EXTRA_ROBOT_ENDPOINT = "EXTRA_ROBOT_ENDPOINT"

@@ -4,8 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.aldebaran.robotservice.IRobotService
-import com.ghostwan.pepperremote.App.Companion.EXTRA_PUBLIC_TOKEN
-import com.ghostwan.pepperremote.App.Companion.EXTRA_ROBOT_ENDPOINT
+import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_PUBLIC_TOKEN
+import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_ROBOT_ENDPOINT
 
 class RobotService : Service() {
     private val binder = RobotServiceBinder(this)
@@ -32,7 +32,7 @@ class RobotService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         robotEndpoint = intent.getStringExtra(EXTRA_ROBOT_ENDPOINT)
         publicToken = intent.getStringExtra(EXTRA_PUBLIC_TOKEN)
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
     class RobotServiceBinder(val service: RobotService) : IRobotService.Stub() {
