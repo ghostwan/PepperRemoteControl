@@ -7,18 +7,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.ghostwan.pepperremote.R
 import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_FOCUS_TOKEN
 import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_PUBLIC_TOKEN
 import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_ROBOT_ENDPOINT
-import com.ghostwan.pepperremote.R
 import com.ghostwan.pepperremote.service.RobotService
-import com.ghostwan.pepperremote.service.RobotService.Companion.KEY_FOCUSID
 import com.ghostwan.pepperremote.ui.launcher.LauncherActivity
 import com.google.android.material.snackbar.Snackbar
 import me.dm7.barcodescanner.zbar.Result
 import me.dm7.barcodescanner.zbar.ZBarScannerView
 import timber.log.Timber
-
 
 
 class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, ZBarScannerView.ResultHandler {
@@ -56,23 +54,16 @@ class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, Z
     }
 
     override fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String) {
-        val activityIntent = Intent(this, LauncherActivity::class.java).apply {
-            putExtra(EXTRA_ROBOT_ENDPOINT, endpoint)
-            putExtra(EXTRA_PUBLIC_TOKEN, publicToken)
-            putExtra(EXTRA_FOCUS_TOKEN, focusToken)
-        }
-//        startActivity(activityIntent)
         val serviceIntent = Intent(this, RobotService::class.java).apply {
             putExtra(EXTRA_ROBOT_ENDPOINT, endpoint)
             putExtra(EXTRA_PUBLIC_TOKEN, publicToken)
         }
         startService(serviceIntent)
 
-        val launchIntent = packageManager.getLaunchIntentForPackage("com.softbankrobotics.pepperremote.sampleqisdk")
-        launchIntent?.apply {
-            putExtra(KEY_FOCUSID, focusToken )
+        val activityIntent = Intent(this, LauncherActivity::class.java).apply {
+            putExtra(EXTRA_FOCUS_TOKEN, focusToken)
         }
-        startActivity(launchIntent)//null pointer check in case package name was not found
+        startActivity(activityIntent)
     }
 
     override fun showError(error: Throwable) {

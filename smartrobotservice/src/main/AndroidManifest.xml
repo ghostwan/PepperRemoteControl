@@ -3,6 +3,7 @@
           package="com.ghostwan.pepperremote">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
 
     <application
             android:name=".SmartRobotServiceApplication"
