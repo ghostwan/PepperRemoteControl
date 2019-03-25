@@ -23,6 +23,14 @@ class LauncherPresenter(override var view: LauncherContract.View?,
 
     override suspend fun startApplication(app: App) {
         view?.showApplication(app)
+        /*TODO After starting application send to the app server the name and the icon of the application
+        *  launch {
+        *     drawable to base 64
+        *     https://stackoverflow.com/questions/38739244/convert-image-to-base64-string-android
+        *     repository.send
+        *  }
+        * */
+
     }
 
     override suspend fun deleteApplication(app: App) {
