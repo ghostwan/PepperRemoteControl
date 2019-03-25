@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ghostwan.pepperremote.R
 import com.ghostwan.pepperremote.data.model.App
 import kotlinx.android.synthetic.main.row_app.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class AppAdapter(private val onClick: (App) -> Unit,
-                 private val onLongClick: (App) -> Unit) : ListAdapter<App, AppAdapter.Holder>(AppDiffCallback()) {
+class AppAdapter(
+    private val onClick: suspend (App) -> Unit,
+    private val onLongClick: suspend (App) -> Unit, private val ui: CoroutineScope
+) : ListAdapter<App, AppAdapter.Holder>(AppDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_app, parent, false)
@@ -19,16 +23,23 @@ class AppAdapter(private val onClick: (App) -> Unit,
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(getItem(position), onClick, onLongClick)
+        holder.bind(getItem(position), onClick, onLongClick, ui)
     }
 
-    class Holder(row: View): RecyclerView.ViewHolder(row) {
-        fun bind(app: App, onClick: (App) -> Unit, onLongClick: (App) -> Unit) {
+    class Holder(row: View) : RecyclerView.ViewHolder(row) {
+        fun bind(
+            app: App,
+            onClick: suspend (App) -> Unit,
+            onLongClick: suspend (App) -> Unit,
+            ui: CoroutineScope
+        ) {
             itemView.name.text = app.name
             itemView.image.setImageDrawable(app.drawable)
-            itemView.setOnClickListener { onClick(app) }
+            itemView.setOnClickListener { ui.launch { onClick(app) } }
             itemView.setOnLongClickListener {
-                onLongClick(app)
+                ui.launch {
+                    onLongClick(app)
+                }
                 true
             }
         }

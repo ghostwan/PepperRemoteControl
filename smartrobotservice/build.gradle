@@ -35,6 +35,10 @@ dependencies {
     //QRCode
     implementation 'me.dm7.barcodescanner:zbar:1.8.4'
 
+    //Coroutines
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$config.coroutine"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$config.coroutine"
+
     //Injection - Koin
     implementation "org.koin:koin-android:$lib.koin"
 
@@ -42,8 +46,8 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$lib.timber"
 
     //Test
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation "androidx.test.ext:junit:$lib.test.junit"
     testImplementation "io.mockk:mockk:$lib.test.mockk"
     testImplementation "org.amshove.kluent:kluent-android:$lib.test.kluent"

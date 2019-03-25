@@ -1,11 +1,13 @@
 package com.ghostwan.pepperremote.ui.qrcode
 
-interface QRCodeScannerContract {
-    interface View {
-        fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String)
-        fun showError(error: Throwable)
+import com.ghostwan.pepperremote.ui.CoroutineContract
+
+interface QRCodeScannerContract  {
+    interface View : CoroutineContract.View {
+        suspend fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String)
+        suspend fun showError(error: Throwable)
     }
-    interface Presenter {
-        fun computeQRCodeInformation(information: String)
+    interface Presenter :CoroutineContract.Presenter<View> {
+        suspend fun computeQRCodeInformation(information: String)
     }
 }

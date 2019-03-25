@@ -14,6 +14,7 @@ import com.ghostwan.pepperremote.SmartRobotServiceApplication.Companion.EXTRA_RO
 import com.ghostwan.pepperremote.service.RobotService
 import com.ghostwan.pepperremote.ui.launcher.LauncherActivity
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import me.dm7.barcodescanner.zbar.Result
 import me.dm7.barcodescanner.zbar.ZBarScannerView
 import timber.log.Timber
@@ -21,9 +22,8 @@ import timber.log.Timber
 
 class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, ZBarScannerView.ResultHandler {
 
-
     private lateinit var scannerView: ZBarScannerView
-    private lateinit var presenter:  QRCodeScannerContract.Presenter
+    private lateinit var presenter: QRCodeScannerContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +34,11 @@ class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, Z
 
     override fun onResume() {
         super.onResume()
+        presenter.takeView(this)
         val permissions = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         if (permissions != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1)
-        }
-        else {
+        } else {
             scannerView.setResultHandler(this)
             scannerView.startCamera()
         }
@@ -47,34 +47,37 @@ class QRCodeScannerActivity : AppCompatActivity(), QRCodeScannerContract.View, Z
     override fun onPause() {
         super.onPause()
         scannerView.stopCamera()
+        presenter.releaseView()
     }
 
     override fun handleResult(result: Result) {
-        presenter.computeQRCodeInformation(result.contents)
+        launch {
+            presenter.computeQRCodeInformation(result.contents)
+        }
     }
 
-    override fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String) {
-        val serviceIntent = Intent(this, RobotService::class.java).apply {
+    override suspend fun showRobotInformation(endpoint: String, publicToken: String, focusToken: String) {
+        val serviceIntent = Intent(this@QRCodeScannerActivity, RobotService::class.java).apply {
             putExtra(EXTRA_ROBOT_ENDPOINT, endpoint)
             putExtra(EXTRA_PUBLIC_TOKEN, publicToken)
         }
         startService(serviceIntent)
 
-        val activityIntent = Intent(this, LauncherActivity::class.java).apply {
+        val activityIntent = Intent(this@QRCodeScannerActivity, LauncherActivity::class.java).apply {
             putExtra(EXTRA_FOCUS_TOKEN, focusToken)
         }
         startActivity(activityIntent)
     }
 
-    override fun showError(error: Throwable) {
-        runOnUiThread {
+    override suspend fun showError(error: Throwable) {
+        ui {
             Timber.e(error)
             val errorID = when (error) {
                 is CorruptedDataException -> R.string.error_qrcode_corrupted
                 else -> R.string.unknown_error
             }
             Snackbar.make(scannerView, errorID, Snackbar.LENGTH_LONG).show()
-            scannerView.setResultHandler(this)
+            scannerView.setResultHandler(this@QRCodeScannerActivity)
             scannerView.startCamera()
         }
     }

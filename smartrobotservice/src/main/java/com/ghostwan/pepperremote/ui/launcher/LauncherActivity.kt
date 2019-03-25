@@ -16,6 +16,7 @@ import com.ghostwan.pepperremote.service.RobotService.Companion.KEY_FOCUSID
 import com.ghostwan.pepperremote.ui.qrcode.CorruptedDataException
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_launcher.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -23,7 +24,12 @@ class LauncherActivity : AppCompatActivity(), LauncherContract.View {
     private val repository: AppRepositoryContract by lazy { AppRepository(packageManager) }
     private val presenter: LauncherContract.Presenter by lazy { LauncherPresenter(this, repository) }
     private val viewManager: RecyclerView.LayoutManager by lazy { LinearLayoutManager(this) }
-    private val viewAdapter: AppAdapter by lazy { AppAdapter(presenter::startApplication, presenter::deleteApplication) }
+    private val viewAdapter: AppAdapter by lazy {
+        AppAdapter(
+            presenter::startApplication,
+            presenter::deleteApplication, this
+        )
+    }
     private var isNewActivity = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,37 +43,55 @@ class LauncherActivity : AppCompatActivity(), LauncherContract.View {
         }
 
         swipeView.setOnRefreshListener {
-            presenter.fetchRoboticAppList()
+            launch {
+                presenter.fetchRoboticAppList()
+            }
         }
 
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.fetchRoboticAppList(isNewActivity)
+        presenter.takeView(this)
+        launch {
+            presenter.fetchRoboticAppList(isNewActivity)
+        }
         isNewActivity = false
     }
 
-    override fun showLoadingIndicator() {
-        swipeView.post { swipeView.isRefreshing = true }
+    override fun onPause() {
+        super.onPause()
+        presenter.releaseView()
     }
 
-    override fun hideLoadingIndicator() {
-        swipeView.post{ swipeView.isRefreshing = false }
+    override suspend fun showLoadingIndicator() {
+        ui {
+            swipeView.post { swipeView.isRefreshing = true }
+        }
     }
 
-    override fun showAppList(apps: List<App>) {
-        emptyList.visibility = View.GONE
-        appList.visibility = View.VISIBLE
-        viewAdapter.submitList(apps)
+    override suspend fun hideLoadingIndicator() {
+        ui {
+            swipeView.post { swipeView.isRefreshing = false }
+        }
     }
 
-    override fun showEmptyList() {
-        appList.visibility = View.GONE
-        emptyList.visibility = View.VISIBLE
+    override suspend fun showAppList(apps: List<App>) {
+        ui {
+            emptyList.visibility = View.GONE
+            appList.visibility = View.VISIBLE
+            viewAdapter.submitList(apps)
+        }
     }
 
-    override fun showApplication(app: App) {
+    override suspend fun showEmptyList() {
+        ui {
+            appList.visibility = View.GONE
+            emptyList.visibility = View.VISIBLE
+        }
+    }
+
+    override suspend fun showApplication(app: App) {
         val launchIntent = packageManager.getLaunchIntentForPackage(app.id)
         launchIntent?.apply {
             putExtra(KEY_FOCUSID, intent.getStringExtra(EXTRA_FOCUS_TOKEN))
@@ -75,15 +99,15 @@ class LauncherActivity : AppCompatActivity(), LauncherContract.View {
         startActivity(launchIntent)
     }
 
-    override fun showUninstallApplication(app: App) {
+    override suspend fun showUninstallApplication(app: App) {
         val intent = Intent(Intent.ACTION_DELETE)
         intent.data = Uri.parse("package:${app.id}")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 
-    override fun showError(throwable: Throwable) {
-        runOnUiThread {
+    override suspend fun showError(throwable: Throwable) {
+        ui {
             Timber.e(throwable)
             val errorID = when (throwable) {
                 is CorruptedDataException -> R.string.error_qrcode_corrupted
