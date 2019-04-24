@@ -13,6 +13,9 @@ class QRCodePresenter(private val view: QRCodeContract.View) : QRCodeContract.Pr
                 view.showQRCode(qrcodeValue)
             }
         }
+        robot.watchFocusLost {
+            view.showFocusLost()
+        }
     }
 
     companion object {

@@ -1,9 +1,7 @@
 package com.ghostwan.pepperremote.robot
 
-import com.aldebaran.qi.Future
-import com.aldebaran.qi.Session
-import com.aldebaran.qi.Tuple
-import com.aldebaran.qi.UserTokenAuthenticator
+import android.util.Log
+import com.aldebaran.qi.*
 import timber.log.Timber
 
 class Pepper(
@@ -11,7 +9,9 @@ class Pepper(
     private val password: String,
     private val login: String="tablet") : Robot {
 
+
     private var session: Session = Session()
+    private var signal: QiSignalConnection? = null
 
     override fun getRemoteEndpoint(): Future<String> {
         return getConnectedSession()
@@ -43,6 +43,20 @@ class Pepper(
             session.setClientAuthenticator(UserTokenAuthenticator(login, password))
             session.connect(endpoint).andThenApply { session }
         }
+    }
+
+    override fun watchFocusLost(onFocusLost: () -> Unit) {
+        getConnectedSession()
+            .andThenCompose { it.service("Focus") }
+            .andThenCompose { it.call(AnyObject::class.java, "take", "password") }
+            .andThenConsume { signal = it.connect("released") {
+                onFocusLost()
+            }}.thenConsume {
+                when {
+                    it.isCancelled -> Timber.w("Future cancel!")
+                    it.hasError()-> Timber.w("Future as error :")
+                }
+            }
     }
 
     class NoEndpointFoundException : Throwable()

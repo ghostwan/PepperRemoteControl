@@ -48,7 +48,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$config.android_gradle"
+        classpath "com.android.tools.build:gradle:${config.android_gradle}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$config.kotlin"
 
         // NOTE: Do not place your application dependencies here; they belong

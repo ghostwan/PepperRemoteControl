@@ -2,16 +2,17 @@ package com.ghostwan.pepperremote.ui.launcher
 
 import com.ghostwan.pepperremote.data.model.App
 import com.ghostwan.pepperremote.data.source.AppRepositoryContract
+import com.ghostwan.pepperremote.tools.toBase64
 import kotlinx.coroutines.launch
 
 class LauncherPresenter(override var view: LauncherContract.View?,
-                        private val repository: AppRepositoryContract) : LauncherContract.Presenter {
+                        private val appRepository: AppRepositoryContract) : LauncherContract.Presenter {
 
 
     override suspend fun fetchRoboticAppList(autoStart: Boolean) {
         launch {
             view?.showLoadingIndicator()
-            val apps = repository.getRoboticApps()
+            val apps = appRepository.getRoboticApps()
             when {
                 apps.isEmpty() -> view?.showEmptyList()
                 apps.size == 1 && autoStart -> startApplication(apps[0])
@@ -23,11 +24,14 @@ class LauncherPresenter(override var view: LauncherContract.View?,
 
     override suspend fun startApplication(app: App) {
         view?.showApplication(app)
+        launch {
+            val base64Image = app.drawable.toBase64()
+        }
         /*TODO After starting application send to the app server the name and the icon of the application
         *  launch {
         *     drawable to base 64
         *     https://stackoverflow.com/questions/38739244/convert-image-to-base64-string-android
-        *     repository.send
+        *     appRepository.send
         *  }
         * */
 
